@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class TankShooting : MonoBehaviour
+public class TankShooting : MonoBehaviourPunCallbacks
 {
     public int m_PlayerNumber = 1;       
     public Rigidbody m_Shell;            
@@ -14,7 +15,7 @@ public class TankShooting : MonoBehaviour
     public float m_MaxLaunchForce = 30f; 
     public float m_MaxChargeTime = 0.75f;
 
-    /*
+    
     private string m_FireButton;         
     private float m_CurrentLaunchForce;  
     private float m_ChargeSpeed;         
@@ -23,8 +24,9 @@ public class TankShooting : MonoBehaviour
 
     private void OnEnable()
     {
-        m_CurrentLaunchForce = m_MinLaunchForce;
-        m_AimSlider.value = m_MinLaunchForce;
+        base.OnEnable();
+        //m_CurrentLaunchForce = m_MinLaunchForce;
+        //m_AimSlider.value = m_MinLaunchForce;
     }
 
 
@@ -34,7 +36,7 @@ public class TankShooting : MonoBehaviour
 
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
     }
-    */
+    
 
     private void Update()
     {
@@ -44,6 +46,20 @@ public class TankShooting : MonoBehaviour
 
     private void Fire()
     {
-        // Instantiate and launch the shell.
+        m_Fired = true;
+        Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+        photonView.RPC("FireOther", RpcTarget.Others, m_FireTransform.position);
+        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        m_ShootingAudio.clip = m_FireClip;
+        m_ShootingAudio.Play();
+        m_CurrentLaunchForce = m_MinLaunchForce;
+    }
+    [PunRPC]
+    private void FireOther(Vector3 pos)
+    {
+        m_Fired = true;
+        Rigidbody shellInstance = Instantiate(m_Shell, pos, m_FireTransform.rotation) as Rigidbody;
+        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        m_CurrentLaunchForce = m_MinLaunchForce;
     }
 }
