@@ -10,7 +10,14 @@ public class TankMovement : MonoBehaviour
     public AudioClip m_EngineDriving;      
     public float m_PitchRange = 0.2f;
 
-    /*
+    public float m_TurretTurnSpeed = 1f; 
+    public string m_TurretTurnAxisName;
+    public string m_TurrentMovementAxisName;
+    private float m_TurretTurnInputValue; 
+    private float m_TurretMovevalue; 
+     //reference to turret script
+
+    
     private string m_MovementAxisName;     
     private string m_TurnAxisName;         
     private Rigidbody m_Rigidbody;         
@@ -30,7 +37,8 @@ public class TankMovement : MonoBehaviour
         m_Rigidbody.isKinematic = false;
         m_MovementInputValue = 0f;
         m_TurnInputValue = 0f;
-    }
+        m_TurretTurnInputValue = 0f;
+}
 
 
     private void OnDisable ()
@@ -45,8 +53,12 @@ public class TankMovement : MonoBehaviour
         m_TurnAxisName = "Horizontal" + m_PlayerNumber;
 
         m_OriginalPitch = m_MovementAudio.pitch;
-    }
-    */
+
+        m_TurrentMovementAxisName = "Vertical1" + m_PlayerNumber;
+        m_TurretTurnAxisName = "Horizontal1" + m_PlayerNumber;
+
+}
+    
 
     private void Update()
     {
